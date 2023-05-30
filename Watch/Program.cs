@@ -11,7 +11,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
     builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
-
 builder.Services.AddScoped<IUnitofWork, UnitofWork>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
