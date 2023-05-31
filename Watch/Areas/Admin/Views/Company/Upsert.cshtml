@@ -1,0 +1,60 @@
+﻿@model Company
+@*for insert the image we take enctype*@
+<form method="post" asp-action="Upsert" enctype="multipart/form-data">
+    <input hidden asp-for="Id" />
+
+    <div class="row">
+        <div class="col-12">
+            <div class="border row">
+                <div class="col-12 p-3 ">
+                    <h3 class="text-primary">@(Model.Id != 0 ? "Update" : "Create") Company</h3>
+        </div>
+        <div class="pb-2">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+                <div class="pb-2">
+            <label asp-for="StreetAddress"></label>
+                    <textarea asp-for="StreetAddress" rows="2" class="form-control"></textarea>
+                    <span asp-validation-for="StreetAddress" class="text-danger"></span>
+        </div>
+                <div class="pb-2">
+            <label asp-for="City"></label>
+            <input asp-for="City" class="form-control" />
+            <span asp-validation-for="City" class="text-danger"></span>
+        </div>
+                <div class="pb-2">
+            <label asp-for="State"></label>
+            <input asp-for="State" class="form-control" />
+            <span asp-validation-for="State" class="text-danger"></span>
+        </div>
+                <div class="pb-2">
+            <label asp-for="Contact"></label>
+            <input asp-for="Contact" class="form-control" />
+            <span asp-validation-for="Contact" class="text-danger"></span>
+        </div>
+       
+        <div class="m-2 col-12">
+                    @if (@Model.Id != 0)
+                    {
+                        <button type="submit" class="btn btn-warning" style="width:150px">Update </button>
+                    }
+                    else{
+                        <button type="submit" class="btn btn-primary" style="width:150px">Create </button>
+                    }
+                  
+            <a asp-controller="Company" asp-action="Index" class="btn btn-secondary" style="width:150px">Back To List</a>
+        </div>
+    </div>
+    </div>  
+</div>
+
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+   
+}

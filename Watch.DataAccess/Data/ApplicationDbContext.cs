@@ -19,5 +19,6 @@ namespace Watch.DataAccess
        public DbSet<Category> WatchCategories { get; set; }
        public DbSet<CoverType> CoverTypes { get; set; }
        public DbSet<Product> Products { get; set; }
+       public DbSet<Company> Companies { get; set; }
     }
 }

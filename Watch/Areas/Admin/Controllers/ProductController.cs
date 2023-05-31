@@ -12,6 +12,7 @@ namespace Watch.Controllers
     public class ProductController : Controller
     {
         private readonly IUnitofWork _unitOfWork;
+        //webhosting is used when we work with the files.
         private readonly IWebHostEnvironment _webHostEnvironment;
 
         //get here with dependency Injection.
