@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Watch.DataAccess\Watch.DataAccess.csproj" />
     <ProjectReference Include="..\Watch.Models\Watch.Models.csproj" />
+    <ProjectReference Include="..\Watch.Utility\Watch.Utility.csproj" />
   </ItemGroup>
 
   <ItemGroup>

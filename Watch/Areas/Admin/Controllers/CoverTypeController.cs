@@ -102,7 +102,7 @@ namespace Watch.Controllers
                 return NotFound();
             }
 
-            //_unitOfWork.CoverType.Remove(obj);
+            _unitOfWork.CoverType.Remove(obj);
             _unitOfWork.Save();
             TempData["success"] = "CoverType Deleted Successfully";
             return RedirectToAction("Index");

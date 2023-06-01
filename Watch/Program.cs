@@ -3,6 +3,8 @@ using Watch.DataAccess.Repository;
 using Watch.DataAccess;
 using Watch.DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Watch.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,14 +12,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+//builder.Services.AddDefaultIdentity<IdentityUser>()
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
 
+builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()
+   .AddEntityFrameworkStores<ApplicationDbContext>();
 
+builder.Services.AddSingleton<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IUnitofWork, UnitofWork>();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddRazorPages();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -35,7 +42,8 @@ app.UseRouting();
 app.UseAuthentication();;
 
 app.UseAuthorization();
-app.MapRazorPages();//To control the identity it is used
+app.MapRazorPages();
+//To control the identity it is used
 app.MapControllerRoute(
     name: "default",
     pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
