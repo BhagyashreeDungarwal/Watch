@@ -104,7 +104,7 @@ namespace Watch.Controllers
                 return NotFound();
             }
 
-          // _unitOfWork.Category.Remove(obj);
+           _unitOfWork.Category.Remove(obj);
             _unitOfWork.Save();
             TempData["success"] = "Category Deleted Successfully";
             return RedirectToAction("Index");
