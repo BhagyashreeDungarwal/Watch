@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Watch.DataAccess.Repository.IRepository;
 using Watch.Models;
 using Watch.Utility;
 
@@ -36,6 +37,7 @@ namespace Watch.Areas.Identity.Pages.Account
         private readonly IEmailSender _emailSender;
         //Create a role manager as it have the default inside the identityuser
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IUnitofWork _unitOfWork;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
@@ -43,7 +45,8 @@ namespace Watch.Areas.Identity.Pages.Account
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IUnitofWork unitofWork)
         {
             _roleManager = roleManager;
             _userManager = userManager;
@@ -52,6 +55,7 @@ namespace Watch.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _unitOfWork = unitofWork;
         }
 
         /// <summary>
@@ -116,8 +120,12 @@ namespace Watch.Areas.Identity.Pages.Account
             public string? PostalCode { get; set; }
             public string? Contact { get; set; }
             public string? Role { get; set; }
+            public int? CompanyId { get; set; }
             [ValidateNever]
             public IEnumerable<SelectListItem> RoleList { get; set; }
+           
+            [ValidateNever]
+            public IEnumerable<SelectListItem> CompanyList { get; set; }
 
         }
 
@@ -137,10 +145,15 @@ namespace Watch.Areas.Identity.Pages.Account
             //Access the database we can use _roleManager there is no need to applicationDbcontext
             Input = new InputModel()
             {//in these we project some data(name) 
-                RoleList = _roleManager.Roles.Select(x=> x.Name).Select(i=> new SelectListItem
+                RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
                 {
                     Text = i,
-                    Value =i
+                    Value = i
+                }),
+                CompanyList = _unitOfWork.Company.GetAll().Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString(),
                 })
             };
         }
@@ -161,13 +174,24 @@ namespace Watch.Areas.Identity.Pages.Account
                 user.State = Input.State;
                 user.PostalCode = Input.PostalCode;
                 user.PhoneNumber = Input.Contact;
+                if(Input.Role== SD.Role_User_Comp)
+                {
+                    user.CompanyId = Input.CompanyId;
+                }
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-
+                    if (Input.Role==null)
+                    {//if user didnt select role then by default the will be individual. 
+                        await _userManager.AddToRoleAsync(user, SD.Role_User_Indi);
+                    }
+                    else
+                    {// or elsee the dole is selected by the user
+                        await _userManager.AddToRoleAsync(user, Input.Role);
+                    }
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
