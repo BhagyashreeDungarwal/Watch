@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 using Watch.DataAccess.Repository.IRepository;
 using Watch.Models;
 
@@ -22,15 +24,44 @@ namespace Watch.Controllers
             IEnumerable<Product> prodList = _unitofWork.Product.GetAll(includeProperties: "Category,CoverType");
             return View(prodList);
         }
-         public IActionResult Details(int id)
+         public IActionResult Details(int productId)
         {
             //retrive all the product
             ShopingCart cartObj = new()
             {
                 Count=1,
-                Product = _unitofWork.Product.GetFirstorDefault(u => u.Id == id, includeProperties: "Category,CoverType")
+                //productid and product.id both can be populate
+                ProductId =productId,
+                Product = _unitofWork.Product.GetFirstorDefault(u => u.Id == productId, includeProperties: "Category,CoverType")
             };
             return View(cartObj);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+         public IActionResult Details(ShopingCart shopingCart)
+        {//it is gave access to the user who is logged in
+            
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            shopingCart.ApplicationUserId = claim.Value;
+
+            //it is used if the user already add a product and add same product then that cannot create a new entry just retrive the old entry
+            ShopingCart cartFromDb = _unitofWork.ShopingCart.GetFirstorDefault(
+                u => u.ApplicationUserId == claim.Value && u.ProductId == shopingCart.ProductId);
+
+            if (cartFromDb  == null)
+            {
+                _unitofWork.ShopingCart.Add(shopingCart);
+            }
+            else
+            {//for these we create a increment and decrement in the shopping cart repository then we can access here.
+                _unitofWork.ShopingCart.IncrementCount(cartFromDb, shopingCart.Count);
+            }
+          
+            _unitofWork.Save();
+
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Privacy()

@@ -13,22 +13,26 @@ namespace Watch.DataAccess.Repository
     {
         private readonly ApplicationDbContext _db;
         public UnitofWork(ApplicationDbContext db)
-        {
+        {//Initilize
             _db = db;
             Category = new CategoryRepository(_db);
             CoverType = new CoverTypeRepository(_db);
             Product = new ProductRepository(_db);
             Company = new CompanyRepository(_db);
+            ApplicationUser = new ApplicationUserRepository(_db);
+            ShopingCart = new ShopingCartRepository(_db);
         }
 
         public ICategoryRepository Category { get; private set; }
         public ICoverTypeRepository CoverType { get; private set; }
         public IProductRepository Product { get; private set; }
         public ICompanyRepository Company { get; private set; }
+        public IApplicationUserRepository ApplicationUser { get; private set; }
+        public IShopingCartRepository ShopingCart { get; private set; }
 
         public void Save()
         {
-            _db.SaveChanges();
+           _db.SaveChanges();
         }
     }
 }

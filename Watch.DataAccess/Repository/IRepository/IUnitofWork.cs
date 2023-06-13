@@ -12,6 +12,8 @@ namespace Watch.DataAccess.Repository.IRepository
         ICoverTypeRepository CoverType { get; }
         IProductRepository Product { get; }
         ICompanyRepository Company { get; }
+        IShopingCartRepository ShopingCart { get; }
+        IApplicationUserRepository ApplicationUser { get; }
         void Save();
     }
 }
