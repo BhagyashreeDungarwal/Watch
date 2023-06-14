@@ -29,9 +29,14 @@ namespace Watch.DataAccess.Repository
             dbSet.Add(entity);
         }
         //Include Prop -"Category,CoverType"
-        public IEnumerable<T> GetAll(string? includeProperties = null)
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>> filter=null, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
+            if (filter!=null)
+            {
+                query = query.Where(filter);
+            }
+           
             //For Product and we can access all foreign key data of Category,CoverType
             if (includeProperties != null)
             {
@@ -43,6 +48,7 @@ namespace Watch.DataAccess.Repository
             return query.ToList();
         }
 
+   
         public T GetFirstorDefault(Expression<Func<T, bool>> filter, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;

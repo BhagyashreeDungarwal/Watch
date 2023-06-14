@@ -21,6 +21,8 @@ namespace Watch.DataAccess.Repository
             Company = new CompanyRepository(_db);
             ApplicationUser = new ApplicationUserRepository(_db);
             ShopingCart = new ShopingCartRepository(_db);
+            OrderHeader = new OrderHeaderRepository(_db);
+            OrderDetail = new OrderDetailRepository(_db);
         }
 
         public ICategoryRepository Category { get; private set; }
@@ -29,6 +31,8 @@ namespace Watch.DataAccess.Repository
         public ICompanyRepository Company { get; private set; }
         public IApplicationUserRepository ApplicationUser { get; private set; }
         public IShopingCartRepository ShopingCart { get; private set; }
+        public IOrderHeaderRepository OrderHeader { get; private set; }
+        public IOrderDetailRepository OrderDetail { get; private set; }
 
         public void Save()
         {
