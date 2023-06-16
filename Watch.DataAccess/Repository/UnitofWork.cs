@@ -13,7 +13,7 @@ namespace Watch.DataAccess.Repository
     {
         private readonly ApplicationDbContext _db;
         public UnitofWork(ApplicationDbContext db)
-        {//Initilize
+        {//Initilize in constructor
             _db = db;
             Category = new CategoryRepository(_db);
             CoverType = new CoverTypeRepository(_db);

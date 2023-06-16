@@ -7,8 +7,8 @@ using Watch.Models;
 
 namespace Watch.DataAccess.Repository.IRepository
 {
-    public interface ICategoryRepository :IRepository<Category>
+    public interface IOrderDetailRepository : IRepository<OrderDetails>
     {
-        void Update(Category obj);
+        void Update(OrderDetails obj);
     }
 }

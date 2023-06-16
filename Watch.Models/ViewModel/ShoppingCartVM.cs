@@ -9,6 +9,7 @@ namespace Watch.Models.ViewModel
     public class ShoppingCartVM
     {
         public IEnumerable<ShopingCart> ListCart { get; set; }
-        public double CartTotal { get; set; }
+       // public double CartTotal { get; set; }//Available in orderheader.
+        public OrderHeader OrderHeader { get; set; }
     }
 }
